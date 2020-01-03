@@ -1,14 +1,3 @@
-// var express = require('express');
-// var app = express();
-// 
-// app.get('/', function (req, res) {
-//     res.send('<p>TaallaOllaan</p>');
-// });
-// 
-// app.listen(process.env.PORT || 3001, function () {
-//     console.log('Node app is working!');
-// });
-
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
@@ -99,14 +88,6 @@ app.delete('/api/persons/:id', (request, response) => {
 
     response.status(204).end()
 })
-
-// app.get('/', (req, res) => {
-//     res.send('<p>TaallaOllaan</p>')
-// })
-// 
-// app.get('/info', (req, res) => {
-//     res.send('<p>TaallaOllaanToisessaKohtaa</p>')
-// })
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {

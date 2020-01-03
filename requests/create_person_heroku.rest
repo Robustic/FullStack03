@@ -1,0 +1,7 @@
+POST https://secret-dawn-55076.herokuapp.com/api/persons
+Content-Type: application/json
+
+{
+    "name": "Uusi Nimi",
+    "number": "987-6543210"
+}

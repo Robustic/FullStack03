@@ -37,7 +37,7 @@ app.get('/api/persons/:id', (request, response, next) => {
         .catch(error => next(error))
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const body = request.body
     if (!body.name || !body.number) {
         return response.status(400).json({
@@ -48,9 +48,11 @@ app.post('/api/persons', (request, response) => {
         name: body.name,
         number: body.number,
     })
-    person.save().then(savedPerson => {
-        response.json(savedPerson.toJSON())
-    })
+    person.save()
+        .then(savedPerson => {
+            response.json(savedPerson.toJSON())
+        })
+        .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
@@ -59,7 +61,7 @@ app.put('/api/persons/:id', (request, response, next) => {
         name: body.name,
         number: body.number,
     }
-    Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    Person.findByIdAndUpdate(request.params.id, person, { new: true, runValidators: true })
         .then(updatedPerson => {
             if (updatedPerson) {
                 response.json(updatedPerson.toJSON())
@@ -85,12 +87,15 @@ const unknownEndpoint = (request, response) => {
 app.use(unknownEndpoint)
 
 const errorHandler = (error, request, response, next) => {
-    console.error(error.message)
-
+    console.log(error.message)
+    
     if (error.name === 'CastError' && error.kind == 'ObjectId') {
         return response.status(400).send({ error: 'malformatted id' })
+    } else if (error.name === 'ValidationError') {
+        return response.status(400).json({ error: error.message })
+    } else if (error.message.startsWith('E11000 duplicate key error collection')) {
+        return response.status(400).json({ error: error.message })
     }
-
     next(error)
 }
 

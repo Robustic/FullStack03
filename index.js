@@ -92,10 +92,8 @@ const errorHandler = (error, request, response, next) => {
     if (error.name === 'CastError' && error.kind === 'ObjectId') {
         return response.status(400).send({ error: 'malformatted id' })
     } else if (error.name === 'ValidationError') {
-        console.log('Virhe tapahtui taalla')
         return response.status(400).json({ error: error.message })
     } else if (error.message.startsWith('E11000 duplicate key error collection')) {
-        console.log('Virhe tapahtui')
         return response.status(400).json({ error: error.message })
     }
     next(error)
